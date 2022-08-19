@@ -2,6 +2,15 @@ from bs4 import BeautifulSoup
 from pip._vendor import requests
 import mysql.connector
 
+
+baseURL = "https://www.themoviedb.org/movie/"
+
+movieNum = 0
+
+
+#fight club
+url = "https://www.themoviedb.org/movie/550"
+
 #adam project 16
 # url = "https://www.themoviedb.org/movie/696806" 
 
@@ -9,7 +18,7 @@ import mysql.connector
 # url = "https://www.themoviedb.org/movie/361743"
 
 #sorcerers 29
-url = "https://www.themoviedb.org/movie/27022-the-sorcerer-s-apprentice"
+# url = "https://www.themoviedb.org/movie/27022-the-sorcerer-s-apprentice"
 
 #first movie in db
 # url = "https://www.themoviedb.org/movie/1"
@@ -20,24 +29,40 @@ result = requests.get(url, headers=headers)
 
 doc = BeautifulSoup(result.text, "html.parser")
 
-mydivs = doc.find_all("div", {"class": "single_column"})
+# print(doc)
 
-generalInfo = doc.find_all("div", {"class": "ott_true"})
+generalInfo = doc.find_all("div", {"class": "title"})
 
-db = mysql.connector.connect(
-    host = "localhost",
-    user = "root",
-    passwd = "password",
-    database = "reegleGame"
-)
+if len(generalInfo) != 0:
+    title = generalInfo[0].find('a').string
 
-mycursor = db.cursor()
+    id = str(generalInfo[0].find_all(href=True)[0]).split('/')[2].split('-')[0]
 
-sql = "INSERT INTO search VALUES (%s, %s)"
-val = (550, "Fight Club")
-mycursor.execute(sql, val)
+    date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
 
-db.commit()
+    print(title)
+    print(id)
+    print(date)
+
+
+    # db = mysql.connector.connect(
+    #     host = "localhost",
+    #     user = "root",
+    #     passwd = "password",
+    #     database = "reegleGame"
+    # )
+
+    # mycursor = db.cursor()
+
+    # sql = "INSERT INTO search VALUES (%s, %s)"
+    # val = (550, "Fight Club")
+    # mycursor.execute(sql, val)
+
+    # db.commit()
+
+
+
+
 
 
 # print(mydivs)
