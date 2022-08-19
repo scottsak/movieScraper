@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from pip._vendor import requests
+import mysql.connector
 
 #adam project 16
 # url = "https://www.themoviedb.org/movie/696806" 
@@ -23,8 +24,22 @@ mydivs = doc.find_all("div", {"class": "single_column"})
 
 generalInfo = doc.find_all("div", {"class": "ott_true"})
 
-# tag = doc.body
+db = mysql.connector.connect(
+    host = "localhost",
+    user = "root",
+    passwd = "password",
+    database = "reegleGame"
+)
+
+mycursor = db.cursor()
+
+sql = "INSERT INTO search VALUES (%s, %s)"
+val = (550, "Fight Club")
+mycursor.execute(sql, val)
+
+db.commit()
+
 
 # print(mydivs)
 
-print(generalInfo)
+# print(generalInfo)
