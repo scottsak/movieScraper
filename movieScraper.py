@@ -1,6 +1,5 @@
 from bs4 import BeautifulSoup
 from pip._vendor import requests
-import mysql.connector
 
 # different movies for testing
 
@@ -38,25 +37,32 @@ doc = BeautifulSoup(result.text, "html.parser")
 generalInfo = doc.find_all("div", {"class": "title"})
 
 if len(generalInfo) != 0:
-
-    # gets the title, id, and date 
-    title = generalInfo[0].find('a').string
-    id = str(generalInfo[0].find_all(href=True)[0]).split('/')[2].split('-')[0]
-    date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
-
-    # prints to test
-    print(title)
-    print(id)
-    print(date)
-
     # gets info for the vote count 
     voteURLBase = "https://www.themoviedb.org/movie/"+movieNum+"/remote/rating/details?translate=false&language=en-US&locale=en-US"
     voteResult = requests.get(voteURLBase, headers=headers)
     doc = BeautifulSoup(voteResult.text, "html.parser")
-    rating = doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0]
+    rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
 
     # tests rating
     print(rating)
+
+    if(rating > 1000):
+
+        # gets the title, id, and date 
+        title = generalInfo[0].find('a').string
+        id = str(generalInfo[0].find_all(href=True)[0]).split('/')[2].split('-')[0]
+        date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
+
+        # prints to test
+        print(title)
+        print(id)
+        print(date)
+
+    else:
+        print("does not have enough votes")
+
+else:
+    print("not a movie in existance")
 
 
     # db = mysql.connector.connect(
