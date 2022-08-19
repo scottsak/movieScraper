@@ -5,11 +5,12 @@ import mysql.connector
 
 baseURL = "https://www.themoviedb.org/movie/"
 
-movieNum = 0
+movieNum = str(550)
 
+url = baseURL + movieNum
 
 #fight club
-url = "https://www.themoviedb.org/movie/550"
+# url = "https://www.themoviedb.org/movie/550"
 
 #adam project 16
 # url = "https://www.themoviedb.org/movie/696806" 
@@ -32,6 +33,21 @@ doc = BeautifulSoup(result.text, "html.parser")
 # print(doc)
 
 generalInfo = doc.find_all("div", {"class": "title"})
+
+
+voteURLBase = "https://www.themoviedb.org/movie/"+movieNum+"/remote/rating/details?translate=false&language=en-US&locale=en-US"
+
+voteResult = requests.get(voteURLBase, headers=headers)
+
+doc = BeautifulSoup(voteResult.text, "html.parser")
+
+rating = doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0]
+
+print(rating)
+
+# voteCount = str(doc.find_all("script")[12])
+
+# print(voteCount)
 
 if len(generalInfo) != 0:
     title = generalInfo[0].find('a').string
