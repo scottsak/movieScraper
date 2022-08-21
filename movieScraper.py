@@ -1,5 +1,6 @@
 from bs4 import BeautifulSoup
 from pip._vendor import requests
+import re
 
 # different movies for testing
 
@@ -24,45 +25,76 @@ baseURL = "https://www.themoviedb.org/movie/"
 
 movieNum = str(550)
 
-url = baseURL + movieNum
-
 #getting header
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36'}
 
-#parsing doc for general info
-result = requests.get(url, headers=headers)
+#starting number
+startNum=420
 
-doc = BeautifulSoup(result.text, "html.parser")
+while(startNum<450):
 
-generalInfo = doc.find_all("div", {"class": "title"})
+    # url = baseURL + movieNum
+    url = baseURL + str(startNum)
 
-if len(generalInfo) != 0:
-    # gets info for the vote count 
-    voteURLBase = "https://www.themoviedb.org/movie/"+movieNum+"/remote/rating/details?translate=false&language=en-US&locale=en-US"
-    voteResult = requests.get(voteURLBase, headers=headers)
-    doc = BeautifulSoup(voteResult.text, "html.parser")
-    rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
 
-    # tests rating
-    print(rating)
 
-    if(rating > 1000):
+    #parsing doc for general info
+    result = requests.get(url, headers=headers)
 
-        # gets the title, id, and date 
+    doc = BeautifulSoup(result.text, "html.parser")
+
+    generalInfo = doc.find_all("div", {"class": "title"})
+
+    if len(generalInfo) != 0:
+        
+
         title = generalInfo[0].find('a').string
-        id = str(generalInfo[0].find_all(href=True)[0]).split('/')[2].split('-')[0]
-        date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
 
-        # prints to test
-        print(title)
-        print(id)
-        print(date)
 
+        if("Collection" in title):
+            print("in a collection, not valid movie")
+        else:
+            date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
+
+            # gets info for the vote count 
+            voteURLBase = "https://www.themoviedb.org/movie/"+str(startNum)+"/remote/rating/details?translate=false&language=en-US&locale=en-US"
+            voteResult = requests.get(voteURLBase, headers=headers)
+            doc = BeautifulSoup(voteResult.text, "html.parser")
+            rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
+
+            # tests rating
+            print("this is the rating: ",rating)
+            if(rating > 1000):
+                if title in open('suggestions.txt').read():
+                    finalTitle = title + date
+                    # print("true")
+
+                # gets the title
+                else :
+                    # print("false")
+                    finalTitle = title
+                
+                #gets the id
+                id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
+                
+
+                # prints to test
+                print(finalTitle)
+                print(id)
+                # print(date)
+
+                file_object = open('suggestions.txt', 'a')
+                # Append 'hello' at the end of file
+                file_object.write("\n\""+finalTitle+","+id+"\",")
+                # Close the file
+                file_object.close()
+            else:
+                print("movie does not have enough votes")
     else:
-        print("does not have enough votes")
+        print("not a movie in existance")
 
-else:
-    print("not a movie in existance")
+    startNum+=1
+    # print(x)
 
 
     # db = mysql.connector.connect(
