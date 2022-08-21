@@ -63,15 +63,13 @@ while(startNum<450):
             rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
 
             # tests rating
-            print("this is the rating: ",rating)
             if(rating > 1000):
+                #gets the title and adds date in case of repeat
                 if title in open('suggestions.txt').read():
                     finalTitle = title + date
-                    # print("true")
 
                 # gets the title
                 else :
-                    # print("false")
                     finalTitle = title
                 
                 #gets the id
@@ -81,13 +79,33 @@ while(startNum<450):
                 # prints to test
                 print(finalTitle)
                 print(id)
-                # print(date)
 
+
+                #writes to the file
+                #------------------------------------------------------
                 file_object = open('suggestions.txt', 'a')
                 # Append 'hello' at the end of file
                 file_object.write("\n\""+finalTitle+","+id+"\",")
                 # Close the file
                 file_object.close()
+
+                #inserts into sql db
+                #------------------------------------------------------
+                # db = mysql.connector.connect(
+                #     host = "localhost",
+                #     user = "root",
+                #     passwd = "password",
+                #     database = "reegleGame"
+                # )
+
+                # mycursor = db.cursor()
+
+                # sql = "INSERT INTO search VALUES (%s, %s)"
+                # val = (550, "Fight Club")
+                # mycursor.execute(sql, val)
+
+                # db.commit()
+
             else:
                 print("movie does not have enough votes")
     else:
@@ -95,28 +113,3 @@ while(startNum<450):
 
     startNum+=1
     # print(x)
-
-
-    # db = mysql.connector.connect(
-    #     host = "localhost",
-    #     user = "root",
-    #     passwd = "password",
-    #     database = "reegleGame"
-    # )
-
-    # mycursor = db.cursor()
-
-    # sql = "INSERT INTO search VALUES (%s, %s)"
-    # val = (550, "Fight Club")
-    # mycursor.execute(sql, val)
-
-    # db.commit()
-
-
-
-
-
-
-# print(mydivs)
-
-# print(generalInfo)
