@@ -1,6 +1,7 @@
 from bs4 import BeautifulSoup
 from pip._vendor import requests
 import re
+import mysql.connector
 
 # different movies for testing
 
@@ -29,9 +30,9 @@ movieNum = str(550)
 headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36'}
 
 #starting number
-startNum=420
+startNum=0
 
-while(startNum<450):
+while(startNum<100):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
@@ -81,30 +82,30 @@ while(startNum<450):
                 print(id)
 
 
-                #writes to the file
-                #------------------------------------------------------
-                file_object = open('suggestions.txt', 'a')
-                # Append 'hello' at the end of file
-                file_object.write("\n\""+finalTitle+","+id+"\",")
-                # Close the file
-                file_object.close()
+                # #writes to the file
+                # #------------------------------------------------------
+                # file_object = open('suggestions.txt', 'a')
+                # # Append 'hello' at the end of file
+                # file_object.write("\n\""+finalTitle+","+id+"\",")
+                # # Close the file
+                # file_object.close()
 
                 #inserts into sql db
                 #------------------------------------------------------
-                # db = mysql.connector.connect(
-                #     host = "localhost",
-                #     user = "root",
-                #     passwd = "password",
-                #     database = "reegleGame"
-                # )
+                db = mysql.connector.connect(
+                    host = "localhost",
+                    user = "root",
+                    passwd = "password",
+                    database = "reegleGame"
+                )
 
-                # mycursor = db.cursor()
+                mycursor = db.cursor()
 
-                # sql = "INSERT INTO search VALUES (%s, %s)"
-                # val = (550, "Fight Club")
-                # mycursor.execute(sql, val)
+                sql = "INSERT INTO search VALUES (%s, %s, %s)"
+                val = (id, title, date)
+                mycursor.execute(sql, val)
 
-                # db.commit()
+                db.commit()
 
             else:
                 print("movie does not have enough votes")
