@@ -1,3 +1,4 @@
+from tabnanny import check
 from bs4 import BeautifulSoup
 from pip._vendor import requests
 import re
@@ -27,10 +28,16 @@ baseURL = "https://www.themoviedb.org/movie/"
 movieNum = str(550)
 
 #getting header
-headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/104.0.5112.79 Safari/537.36'}
+headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) Gecko/20100101 Firefox/78.0'}
+
+
+
+
+
+
 
 #starting number
-startNum=0
+startNum=60
 
 while(startNum<100):
 
@@ -65,21 +72,21 @@ while(startNum<100):
 
             # tests rating
             if(rating > 1000):
-                #gets the title and adds date in case of repeat
-                if title in open('suggestions.txt').read():
-                    finalTitle = title + date
+                # #gets the title and adds date in case of repeat
+                # if title in open('suggestions.txt').read():
+                #     finalTitle = title + date
 
-                # gets the title
-                else :
-                    finalTitle = title
+                # # gets the title
+                # else :
+                #     finalTitle = title
                 
-                #gets the id
-                id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
+                # #gets the id
+                # id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
                 
 
-                # prints to test
-                print(finalTitle)
-                print(id)
+                # # prints to test
+                # print(finalTitle)
+                # print(id)
 
 
                 # #writes to the file
@@ -89,6 +96,12 @@ while(startNum<100):
                 # file_object.write("\n\""+finalTitle+","+id+"\",")
                 # # Close the file
                 # file_object.close()
+
+
+                #gets the id
+                id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
+
+                # title = title.replace("\'", "\'\'")
 
                 #inserts into sql db
                 #------------------------------------------------------
@@ -101,8 +114,19 @@ while(startNum<100):
 
                 mycursor = db.cursor()
 
-                sql = "INSERT INTO search VALUES (%s, %s, %s)"
-                val = (id, title, date)
+                checkIfSameName = str("Select title from search where title=\""+title+"\"" )
+                print(checkIfSameName)
+
+                mycursor.execute(checkIfSameName)
+                myresult = mycursor.fetchall()
+
+                if(len(myresult) > 0):
+                    finalTitle = str(title+date)
+                else:
+                    finalTitle = str(title)
+
+                sql = "INSERT INTO search VALUES (%s, %s)"
+                val = (id, finalTitle)
                 mycursor.execute(sql, val)
 
                 db.commit()
