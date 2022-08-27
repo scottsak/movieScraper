@@ -37,9 +37,9 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) 
 
 
 #starting number
-startNum=60
+startNum=1100
 
-while(startNum<100):
+while(startNum<1500):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
@@ -71,7 +71,7 @@ while(startNum<100):
             rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
 
             # tests rating
-            if(rating > 1000):
+            if(rating > 2000):
                 # #gets the title and adds date in case of repeat
                 # if title in open('suggestions.txt').read():
                 #     finalTitle = title + date
@@ -106,16 +106,20 @@ while(startNum<100):
                 #inserts into sql db
                 #------------------------------------------------------
                 db = mysql.connector.connect(
-                    host = "localhost",
-                    user = "root",
-                    passwd = "password",
-                    database = "reegleGame"
+                    # host = "localhost",
+                    # user = "root",
+                    # passwd = "password",
+                    # database = "reegleGame"
+                    host = "reegle-database.caxpaw8r0608.us-west-1.rds.amazonaws.com",
+                    port = '3306',
+                    database='sys',
+                    user = "admin",
+                    passwd = 'password'
                 )
 
                 mycursor = db.cursor()
 
                 checkIfSameName = str("Select title from search where title=\""+title+"\"" )
-                print(checkIfSameName)
 
                 mycursor.execute(checkIfSameName)
                 myresult = mycursor.fetchall()
@@ -132,7 +136,16 @@ while(startNum<100):
                 db.commit()
 
             else:
-                print("movie does not have enough votes")
+                print("movie does not have enough votes: ", title)
+                if(rating > 1000):
+                    #writes to the file
+                    #------------------------------------------------------
+                    file_object = open('almostMovies.txt', 'a')
+                    # Append 'hello' at the end of file
+                    file_object.write(str("\n\""+title+","+str(id)+"\","))
+                    # Close the file
+                    file_object.close()
+
     else:
         print("not a movie in existance")
 
