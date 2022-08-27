@@ -37,9 +37,9 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) 
 
 
 #starting number
-startNum=1100
+startNum=2000
 
-while(startNum<1500):
+while(startNum<2100):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
@@ -70,6 +70,9 @@ while(startNum<1500):
             doc = BeautifulSoup(voteResult.text, "html.parser")
             rating = int(doc.find_all("div", {"class":"section"})[0].find("h3").string.split(" ")[0].replace(",", ""))
 
+            #gets the id
+            id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
+
             # tests rating
             if(rating > 2000):
                 # #gets the title and adds date in case of repeat
@@ -97,9 +100,6 @@ while(startNum<1500):
                 # # Close the file
                 # file_object.close()
 
-
-                #gets the id
-                id = re.split("-|>|\"", str(generalInfo[0].find_all(href=True)[0]).split('/')[2])[0]
 
                 # title = title.replace("\'", "\'\'")
 
@@ -134,9 +134,10 @@ while(startNum<1500):
                 mycursor.execute(sql, val)
 
                 db.commit()
+                print("movie added to db: "+finalTitle +" id: "+ str(id))
 
             else:
-                print("movie does not have enough votes: ", title)
+                print("movie does not have enough votes: ", title+" id: "+ str(id))
                 if(rating > 1000):
                     #writes to the file
                     #------------------------------------------------------
@@ -147,7 +148,7 @@ while(startNum<1500):
                     file_object.close()
 
     else:
-        print("not a movie in existance")
+        print("not a movie in existance id: "+ str(id))
 
     startNum+=1
     # print(x)
