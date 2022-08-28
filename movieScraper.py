@@ -37,9 +37,9 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) 
 
 
 #starting number
-startNum=3538
+startNum=4000
 
-while(startNum<4000):
+while(startNum<5000):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
@@ -57,13 +57,16 @@ while(startNum<4000):
         
 
         title = generalInfo[0].find('a').string
+        date = generalInfo[0].find_all("span", {"class" : "release_date"})
 
 
         if("Collection" in title):
             print("in a collection, not valid movie")
+        
+        elif(len(date) == 0):
+            print("does not include a date")
         else:
-            date = generalInfo[0].find_all("span", {"class" : "release_date"})[0].string
-
+            date = date[0].string
             # gets info for the vote count 
             voteURLBase = "https://www.themoviedb.org/movie/"+str(startNum)+"/remote/rating/details?translate=false&language=en-US&locale=en-US"
             voteResult = requests.get(voteURLBase, headers=headers)
