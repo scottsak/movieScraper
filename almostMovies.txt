@@ -105,3 +105,6 @@
 "Gothika,4970",
 "Paprika,4977",
 "An American Tail,4978",
+"Sky Captain and the World of Tomorrow,5137",
+"Bicycle Thieves,5156",
+"Salò, or the 120 Days of Sodom,5336",

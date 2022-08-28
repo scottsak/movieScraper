@@ -37,9 +37,10 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) 
 
 
 #starting number
-startNum=4000
+startNum=5200
+id = startNum
 
-while(startNum<5000):
+while(startNum<5500):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
@@ -151,7 +152,8 @@ while(startNum<5000):
                     file_object.close()
 
     else:
-        print("not a movie in existance id: "+ str(id))
+        id = str(int(id)+1)
+        print("not a movie in existance id: "+ id)
 
     startNum+=1
     # print(x)
