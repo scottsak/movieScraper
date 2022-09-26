@@ -6,10 +6,10 @@
 
 3. I had the program filter the results into 3 categories. 
 
-  -Movies to add to the database
+     -Movies to add to the database
   
-  -Movies that are almost popular enough that I will go through later
+     -Movies that are almost popular enough that I will go through later
   
-  -Movies that are very unpopular or that return invalid results
+     -Movies that are very unpopular or that return invalid results
 
 4. I will then go through the lists and see if any of the almost piles I would like to add to the list.
