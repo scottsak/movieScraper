@@ -37,10 +37,10 @@ headers = {'User-Agent':'Mozilla/5.0 (Macintosh; Intel Mac OS X 10.11; rv:78.0) 
 
 
 #starting number
-startNum=5200
+startNum=10000
 id = startNum
 
-while(startNum<5500):
+while(startNum<12000):
 
     # url = baseURL + movieNum
     url = baseURL + str(startNum)
